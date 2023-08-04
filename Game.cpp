@@ -6,6 +6,7 @@
 #include <time.h>
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include "Number.h"
 
 //
 //  You are free to modify this file
@@ -35,6 +36,8 @@ double speed;
 double spawnTime;
 bool isWin;
 double restartGame;
+int score;
+Number number;
 
 int GetRandomNumber(int min, int max)
 {
@@ -59,6 +62,7 @@ void initialize()
     };
     speed = 0.05;
     isWin = true;
+    score = 0;
 }
 
 // this function is called to update game data,
@@ -103,6 +107,7 @@ void act(float dt)
                       else
                       {
                           balls[k] = AppearBall(0, GetRandomNumber(0, SCREEN_HEIGHT), GetRandomNumber(SCREEN_WIDTH - (2 * R), ((SCREEN_WIDTH - (R * 2)) / 2) + (2 * R)), GetRandomNumber(SCREEN_HEIGHT - (2 * R), ((SCREEN_HEIGHT - (R * 2)) / 2) + (2 * R)), rand(), false);
+                          score++;
                       }
                   }
               }
@@ -184,6 +189,95 @@ void draw()
                   continue;
               buffer[i + balls[k].getY()][j + balls[k].getX()] = balls[k].getColor();
           }
+      }
+  }
+
+  //draw score
+  int tempX = number.getSize();
+  int tempY = number.getSize();
+  if (score == 0)
+  {
+      number.setZero();
+      for (int i = number.getM() - 1; i >= 0; i--)
+      {
+          for (int j = 0; j < number.getN(); j++)
+          {
+              if (number.getMap(j, i) == 1)
+              {
+                  for (int k = 0; k < number.getSize(); k++)
+                  {
+                      for (int l = 0; l < number.getSize(); l++)
+                      {
+                          buffer[tempY + k][SCREEN_WIDTH-(tempX + l)] = firstBall.getColor();
+                      }
+                  }
+              }
+              tempY += number.getSize();
+          }
+          tempY = number.getSize();
+          tempX += number.getSize();
+      }
+
+  }
+  else
+  {
+      for (int q = score; q > 0; q = q / 10)
+      {
+          switch (q % 10)
+          {
+          case 0:
+              number.setZero();
+              break;
+          case 1:
+              number.setOne();
+              break;
+          case 2:
+              number.setTwo();
+              break;
+          case 3:
+              number.setThree();
+              break;
+          case 4:
+              number.setFour();
+              break;
+          case 5:
+              number.setFive();
+              break;
+          case 6:
+              number.setSix();
+              break;
+          case 7:
+              number.setSeven();
+              break;
+          case 8:
+              number.setEight();
+              break;
+          case 9:
+              number.setNine();
+              break;
+          }
+
+          for (int i = number.getM() - 1; i >= 0; i--)
+          {
+              for (int j = 0; j < number.getN(); j++)
+              {
+                  if (number.getMap(j, i) == 1)
+                  {
+                      for (int k = 0; k < number.getSize(); k++)
+                      {
+                          for (int l = 0; l < number.getSize(); l++)
+                          {
+                              buffer[tempY + k][SCREEN_WIDTH - (tempX + l)] = firstBall.getColor();
+                          }
+                      }
+                  }
+                  tempY += number.getSize();
+              }
+              tempY = number.getSize();
+              tempX += number.getSize();
+          }
+          tempX += number.getSize();
+          number.setNull();
       }
   }
 }
